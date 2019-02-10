@@ -123,7 +123,7 @@ function registered(req: express.Request, res: express.Response) {
         userMongo.findOne({token: req.header('token')})
             .then((user: any): any => {
                 if (user.isAdmin == true) {
-                    return userMongo.find({}).populate('team').select('-password -token -_id').exec();
+                    return userMongo.find({}).populate('team').select('-password -token').exec();
                 } else {
                     res.status(403).json({ntm: 'ntm'});
                 }
