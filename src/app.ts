@@ -31,6 +31,8 @@ app.get('/check', check);
 app.get('/me', me);
 app.get('/admin', admin);
 app.get('/registered', admin, registered);
+app.get('/removeUser/:id', admin, removeUser);
+app.get('/removeTeam/:id', admin, removeUser);
 app.get('/logout', logout);
 
 app.listen(port, () => console.log(`Toornament Noomy API Is Started`));
@@ -255,4 +257,17 @@ function assignToTeam(req: express.Request, res: express.Response) {
                 });
         }
     });
+}
+
+function removeUser(req: express.Request, res: express.Response) {
+    teamMongo.findOneAndUpdate({_id: req.params.id}, {$pull: {players: req.body.playerId}})
+        .then((result) => {
+            return userMongo.findByIdAndDelete({_id: req.params.id}).exec();
+        })
+        .then(() => {
+            res.status(200).json({success: 'deleted'});
+        })
+        .catch((error: any) => {
+            console.log(error);
+        });
 }
